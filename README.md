@@ -41,7 +41,7 @@ For simplicity, each buyer makes exactly one purchase of the specified product i
 
 First, we compare average revenue per buyer within each region.
 
-![Regional comparison](images/regional_comparison.png)
+![Regional sales comparison](images/regional_sales.png)
 
 **Findings:**
 
@@ -53,8 +53,8 @@ Coffee performs better in both regions.
 ## 🔍 Simpson's Paradox: The Overall Result
 
 Next, we combine the observations across both regions and calculate the weighted average revenue per buyer.
-
-![Overall comparison](images/overall_comparison.png)
+![Overall sales comparison](images/overall_sales.png)
+![Combined sales comparison](images/combined_sales.png)
 
 | Product | Total Buyers | Total Revenue | Average Revenue per Buyer |
 |---|---:|---:|---:|
@@ -124,4 +124,3 @@ This project uses deliberately constructed synthetic data to illustrate a statis
 
 **Sadan Rizqi**
 
-Exploring the application of statistics and Python to practical business analysis.
