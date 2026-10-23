@@ -1,0 +1,94 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. Create synthetic data
+
+data = {
+    "region": ["North", "North", "South", "South"],
+    "product": ["Coffee", "Milk", "Coffee", "Milk"],
+    "buyers": [10, 90, 89, 8],
+    "average_sales": [90, 80, 30, 20],
+}
+
+df = pd.DataFrame(data)
+
+# 2. Calculate total sales revenue for each group
+df["total_sales"] = df["buyers"] * df["average_sales"]
+
+print("SYNTHETIC SALES DATA")
+print(df.to_string(index=False))
+
+# 3. Compare average sales revenue within each region
+regional = df.pivot(
+    index="region",
+    columns="product",
+    values="average_sales",
+)
+
+print("\nAVERAGE SALES REVENUE BY REGION")
+print(regional)
+
+# 4. Calculate overall weighted average per buyer
+overall = (
+    df.groupby("product")
+    .agg(
+        buyers=("buyers", "sum"),
+        total_sales=("total_sales", "sum"),
+    )
+)
+
+overall["average_sales"] = (
+    overall["total_sales"] / overall["buyers"]
+)
+
+print("\nOVERALL AVERAGE SALES REVENUE PER BUYER")
+print(overall.round(2))
+
+# 5. Check whether Simpson's paradox occurs
+coffee_wins_in_each_region = (
+    (regional["Coffee"] > regional["Milk"]).all()
+)
+
+milk_wins_overall = (
+    overall.loc["Milk", "average_sales"]
+    > overall.loc["Coffee", "average_sales"]
+)
+
+paradox_detected = (
+    coffee_wins_in_each_region and milk_wins_overall
+)
+
+print("\nSIMPSON'S PARADOX DETECTED:", paradox_detected)
+
+# 6. Visualize the results
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# Chart 1: Regional comparison
+regional[["Coffee", "Milk"]].plot(
+    kind="bar",
+    ax=axes[0],
+)
+
+axes[0].set_title("Average Sales Revenue per Buyer by Region")
+axes[0].set_xlabel("Region")
+axes[0].set_ylabel("Average revenue per buyer")
+axes[0].tick_params(axis="x", rotation=0)
+axes[0].legend(title="Product")
+
+# Chart 2: Overall comparison
+overall["average_sales"].reindex(
+    ["Coffee", "Milk"]
+).plot(
+    kind="bar",
+    ax=axes[1],
+)
+
+axes[1].set_title("Overall Average Sales Revenue per Buyer")
+axes[1].set_xlabel("Product")
+axes[1].set_ylabel("Average revenue per buyer")
+axes[1].tick_params(axis="x", rotation=0)
+
+plt.tight_layout()
+plt.savefig("simpsons_paradox.png", dpi=150)
+plt.show()
